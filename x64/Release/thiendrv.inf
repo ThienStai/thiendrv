@@ -1,0 +1,90 @@
+;
+; thiendrv.inf
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=Sample ; TODO: edit Class
+ClassGuid={78A1C341-4539-11d3-B88D-00C04FAD5171} ; TODO: edit ClassGuid
+Provider=%ManufacturerName%
+CatalogFile=thiendrv.cat
+DriverVer = 03/25/2021,13.21.7.163
+PnpLockDown=1
+
+[DestinationDirs]
+DefaultDestDir = 12
+thiendrv_Device_CoInstaller_CopyFiles = 11
+
+; ================= Class section =====================
+
+[ClassInstall32]
+Addreg=SampleClassReg
+
+[SampleClassReg]
+HKR,,,0,%ClassName%
+HKR,,Icon,,-5
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+thiendrv.sys  = 1,,
+;
+
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Standard,NTamd64
+
+[Standard.NTamd64]
+%thiendrv.DeviceDesc%=thiendrv_Device, Root\thiendrv ; TODO: edit hw-id
+
+[thiendrv_Device.NT]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+thiendrv.sys
+
+;-------------- Service installation
+[thiendrv_Device.NT.Services]
+AddService = thiendrv,%SPSVCINST_ASSOCSERVICE%, thiendrv_Service_Inst
+
+; -------------- thiendrv driver install sections
+[thiendrv_Service_Inst]
+DisplayName    = %thiendrv.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\thiendrv.sys
+
+;
+;--- thiendrv_Device Coinstaller installation ------
+;
+
+[thiendrv_Device.NT.CoInstallers]
+AddReg=thiendrv_Device_CoInstaller_AddReg
+CopyFiles=thiendrv_Device_CoInstaller_CopyFiles
+
+[thiendrv_Device_CoInstaller_AddReg]
+;
+
+
+[thiendrv_Device_CoInstaller_CopyFiles]
+;
+
+
+[thiendrv_Device.NT.Wdf]
+KmdfService =  thiendrv, thiendrv_wdfsect
+[thiendrv_wdfsect]
+KmdfLibraryVersion = 1.15
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+ManufacturerName="<Your manufacturer name>" ;TODO: Replace with your manufacturer name
+ClassName="Samples" ; TODO: edit ClassName
+DiskName = "thiendrv Installation Disk"
+thiendrv.DeviceDesc = "thiendrv Device"
+thiendrv.SVCDESC = "thiendrv Service"
