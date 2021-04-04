@@ -1,4 +1,4 @@
 ## thiendrv - Kernel mode driver
-A driver  capable of kill/hide process, reda/write virtual memory
+A driver  capable of kill/hide process, read/write virtual memory
 
 
