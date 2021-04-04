@@ -6,7 +6,9 @@ thienctl/x64/*
 thiendrv/Debug/*
 thiendrv/ARM/*
 thiendrv/x64/*
-x64/*
+*.sys
 *.exe
 *.pdb
 *.cmd
+*.inf
+*.lib
