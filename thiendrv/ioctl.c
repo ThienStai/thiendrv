@@ -1,7 +1,9 @@
-#pragma warning(disable: 4100 4022)
+#pragma warning(disable: 4100 4022 4311 4002 6064 4047 4024)
 #include "ioctl.h"
-#include "defines.hpp"
+#include "defines.h"
 #include "memory.h"
+#include <ntifs.h>
+#include "iohandle.h"
 NTSTATUS CreateCall(PDEVICE_OBJECT pDevObj, PIRP Irp)
 {
 	UNREFERENCED_PARAMETER(pDevObj);
@@ -21,7 +23,7 @@ NTSTATUS CloseCall(PDEVICE_OBJECT pDevObj, PIRP Irp)
 
 	Irp->IoStatus.Status = STATUS_SUCCESS;
 	Irp->IoStatus.Information = 0;
-	DbgPrintEx(0, 0, "Connecton terminated!");
+	DbgPrintEx(0, 0, "Connection terminated!");
 	IoCompleteRequest(Irp, IO_NO_INCREMENT);
 	return STATUS_SUCCESS;
 
@@ -32,7 +34,7 @@ NTSTATUS IoControl(PDEVICE_OBJECT pDevObj, PIRP Irp)
 	UNREFERENCED_PARAMETER(pDevObj);
 	UNREFERENCED_PARAMETER(Irp);
 
-	NTSTATUS Status = STATUS_UNSUCCESSFUL;
+	NTSTATUS Status = STATUS_SUCCESS;
 	ULONG ByteIO = 0;
 
 	PIO_STACK_LOCATION stack = IoGetCurrentIrpStackLocation(Irp);
@@ -40,43 +42,47 @@ NTSTATUS IoControl(PDEVICE_OBJECT pDevObj, PIRP Irp)
 
 
 	switch (ControlCode) {
-		//Request miniworld base addr
 	case IO_GETMW_BASEADDR: {
-		PULONG Output = (PULONG)Irp->AssociatedIrp.SystemBuffer;
-		*Output = libiworld_micro_ADDR;
-		DbgPrintEx(0, 0, "Replied to libiworld_micro_ADDR request!\n");
-		Status = STATUS_SUCCESS;
-		ByteIO = sizeof(*Output);
+		HandleMWBaseAddrRequest(Irp, &Status, &ByteIO, libiworld_micro_ADDR);
+		break;
+	}
+	case IO_READ_REQUEST: {
+		PKERNEL_READ_REQUEST ReadInput = (PKERNEL_READ_REQUEST)Irp->AssociatedIrp.SystemBuffer;
+		HandleKeReadRequest(&Status, &ByteIO, ReadInput);
+		break;
+	}
+	case IO_WRITE_REQUEST: {
+		PKERNEL_WRITE_REQUEST ReadInput = (PKERNEL_WRITE_REQUEST)Irp->AssociatedIrp.SystemBuffer;
+		HandleKeWriteRequest(&Status, &ByteIO, ReadInput);
+		break;
+	}
+	case IO_KILL_PROCESS: {
+		PKERNEL_KILL_PROCESS_REQUEST ReadInput = (PKERNEL_KILL_PROCESS_REQUEST)Irp->AssociatedIrp.SystemBuffer;
+		HandleKeKillProcessRequest(&Status, ReadInput);
+		break;
+	}
+	case IO_HIDE_PROCESS: {
+		PKERNEL_HIDE_PROCESS_REQUEST ReadInput = (PKERNEL_HIDE_PROCESS_REQUEST)Irp->AssociatedIrp.SystemBuffer;
+		HandleKeHideProcessRequest(ReadInput);
 		break;
 	}
 
-						  //request read
-	case IO_READ_REQUEST: {
-		PREAD_REQUEST_DATA ReadInput = (PREAD_REQUEST_DATA)Irp->AssociatedIrp.SystemBuffer;
-		PEPROCESS Process;
-		if (NT_SUCCESS(PsLookupProcessByProcessId((HANDLE)ReadInput->ProcessID, &Process))) {
-			if NT_SUCCESS(KernelReadProcessMemory(Process, (PVOID)ReadInput->Address, (PVOID)ReadInput->pBuff, ReadInput->Size)) {
-				Status = STATUS_SUCCESS;
-				ByteIO = sizeof(READ_REQUEST_DATA);
-			}
-			else break;
-		}
-		else break;
+
+
+	case IO_SYS_SHUTDOWN: {
+		DbgPrintEx(0, 0, "Shutdown system!");
+		NtShutdownSystem(ShutdownNoReboot);
+		break;
 	}
-
-						//request write
-	case IO_WRITE_REQUEST: {
-		PWRITE_REQUEST_DATA WriteInput = (PWRITE_REQUEST_DATA)Irp->AssociatedIrp.SystemBuffer;
-		PEPROCESS Process;
-		if (NT_SUCCESS(PsLookupProcessByProcessId((HANDLE)WriteInput->ProcessID, &Process))) {
-			if NT_SUCCESS(KernelWriteProcessMemory(Process, WriteInput->pBuff, WriteInput->Address, WriteInput->Size)) {
-				Status = STATUS_SUCCESS;
-				ByteIO = sizeof(WRITE_REQUEST_DATA);
-			}
-			else break;
-		}
-		else break;
-
+	case IO_SYS_REBOOT: {
+		DbgPrintEx(0, 0, "Reboot system!");
+		NtShutdownSystem(ShutdownReboot);
+		break;
+	}
+	case IO_SYS_POWEROFF: {
+		DbgPrintEx(0, 0, "Powwr off system!");
+		NtShutdownSystem(ShutdownPowerOff);
+		break;
 	}
 	default:
 		ByteIO = 0;

@@ -129,6 +129,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <GenerateManifest>false</GenerateManifest>
+    <Inf2CatUseLocalTime>true</Inf2CatUseLocalTime>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
@@ -149,6 +150,34 @@
       <ForceSymbolReferences>
       </ForceSymbolReferences>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
+      <TreatLinkerWarningAsErrors>false</TreatLinkerWarningAsErrors>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>c:\Users\thien\source\repos\thiendrv\thiendrv;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <ClCompile>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Link>
+      <TreatLinkerWarningAsErrors>false</TreatLinkerWarningAsErrors>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
+      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Link>
+      <TreatLinkerWarningAsErrors>false</TreatLinkerWarningAsErrors>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
+      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Link>
+      <TreatLinkerWarningAsErrors>false</TreatLinkerWarningAsErrors>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
+      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -159,16 +188,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="data.h" />
-    <ClInclude Include="defines.hpp" />
+    <ClInclude Include="defines.h" />
     <ClInclude Include="events.h" />
     <ClInclude Include="ioctl.h" />
+    <ClInclude Include="iohandle.h" />
     <ClInclude Include="memory.h" />
     <ClInclude Include="thiendrv.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="data.c" />
+    <ClCompile Include="defines.c" />
     <ClCompile Include="events.c" />
     <ClCompile Include="ioctl.c" />
+    <ClCompile Include="iohandle.c" />
     <ClCompile Include="memory.c" />
     <ClCompile Include="thiendrv.c" />
   </ItemGroup>

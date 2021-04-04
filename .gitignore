@@ -7,3 +7,6 @@ thiendrv/Debug/*
 thiendrv/ARM/*
 thiendrv/x64/*
 x64/*
+*.exe
+*.pdb
+*.cmd

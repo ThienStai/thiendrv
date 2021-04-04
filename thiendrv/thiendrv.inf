@@ -45,7 +45,7 @@ WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with
 CopyFiles=Drivers_Dir
 
 [Drivers_Dir]
-thiendrv.sys
+
 
 ;-------------- Service installation
 [thiendrv_Device.NT.Services]

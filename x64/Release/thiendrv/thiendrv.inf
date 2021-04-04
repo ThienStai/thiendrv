@@ -8,7 +8,7 @@ Class=Sample ; TODO: edit Class
 ClassGuid={78A1C341-4539-11d3-B88D-00C04FAD5171} ; TODO: edit ClassGuid
 Provider=%ManufacturerName%
 CatalogFile=thiendrv.cat
-DriverVer = 03/25/2021,13.21.7.163
+DriverVer = 04/04/2021,10.34.34.346
 PnpLockDown=1
 
 [DestinationDirs]
@@ -46,7 +46,7 @@ thiendrv.sys  = 1,,
 CopyFiles=Drivers_Dir
 
 [Drivers_Dir]
-thiendrv.sys
+
 
 ;-------------- Service installation
 [thiendrv_Device.NT.Services]

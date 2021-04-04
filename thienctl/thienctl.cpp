@@ -1,29 +1,70 @@
+#pragma warning(disable : 6031)
 #include <Windows.h>
 #include <iostream>
 #include <cstdio>
 #include "kernelinterface.hpp"
 #include "mem.h"
 #include "proc.h"
-void print_ivec3(ivec3 vec) {
-	printf("X: %6ld Y: %6ld Z: *6ld", vec.x, vec.y, vec.z);
-}
+
 int main()
 {
-	KernelInterface thiendrv = KernelInterface("\\\\.\\thiendrv");
-	DWORD BaseAddress = GetModuleBaseAddress(GetProcId(L"iworldpc3.exe"), L"libiworld_micro.dll");
-	ivec3 PlayerCoord;
-	READ_REQUEST_DATA playerPosRequest;
-
-	//playerPosRequest.Address = mem::FindDMAAddy(BaseAddress, { 0x666 });
-	//playerPosRequest.pBuff = pPlayer;
-	//playerPosRequest.ProcessID = GetProcId(L"iworldpc3.exe");
-	//playerPosRequest.Size = sizeof(ivec3);
-	PlayerCoord = thiendrv.ReadVirtualMemory<ivec3>(
-		GetProcId(L"iworldpc3.exe"),
-		mem::FindDMAAddy(BaseAddress, { 0x666 })
-		);
+	KernelInterface thiendrv = KernelInterface(L"\\\\.\\thiendrv");
+	ULONG input = 0;
 	while (true) {
-		//print_ivec3();
+		system("cls");
+		printf("Enter option:\r\n");
+		printf("0. Exit \r\n");
+		printf("1. Kill process\r\n");
+		printf("2. Hide process\r\n");
+		printf("3. Shutdown/Reboot/Power off\r\n>> ");
+		scanf("%uld", &input);
+		if (!input) {
+			return 0;
+		}
+		if (input == 1) {
+			printf("\r\nEnter process id to kill or 0 to exit:\r\n>> ");
+			scanf("%uld", &input);
+			if (input == 0)
+				continue;
+			thiendrv.KillProcess(input);
+		}
+		else if (input == 2) {
+			printf("\r\nEnter process id to hide or 0 to exit\r\n>> ");
+			scanf("%uld", &input);
+			if (input == 0)
+				continue;
+			thiendrv.HideProcess(input);
+		}
+		else if (input == 3) {
+			printf("\r\nChoose an option:\r\n");
+			printf("\r\n0. Return to menu");
+			printf("\r\n1. Shutdown");
+			printf("\r\n2. Reboot");
+			printf("\r\n3. Poweroff");
+			scanf("%uld", &input);
+			if (input == 0)
+				continue;
+			switch (input) {
+			case 1:
+				thiendrv.ShutdownSystem();
+				break;
+			case 2:
+				thiendrv.RebootSystem();
+				break;
+			case 3:
+				thiendrv.PowerOffSystem();
+				break;
+			default:
+				printf("Invalid option!\r\n");
+				Sleep(1000);
+				continue;
+			}
+		}
+		else {
+			printf("Invalid option!\r\n");
+			Sleep(1000);
+			continue;
+		}
 	}
 
 }
