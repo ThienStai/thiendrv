@@ -41,24 +41,30 @@
     <ClInclude Include="iohandle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="helper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="events.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ioctl.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="data.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="memory.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="defines.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="events.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="helper.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ioctl.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="iohandle.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="memory.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="thiendrv.c">

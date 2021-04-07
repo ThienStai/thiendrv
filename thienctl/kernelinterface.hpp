@@ -8,11 +8,11 @@ public:
 	KernelInterface(LPCWSTR RegPath) {
 		hDriver = CreateFileW(RegPath, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 		if (hDriver == INVALID_HANDLE_VALUE) {
-			std::cout << "Unable to open handle to thiendrv\n";
-			std::cout << "CreateFileA return 0x" << std::uppercase << std::hex << hDriver << std::endl;
+			MessageBoxExW(GetForegroundWindow(), L"Failed to open handle to thiendrv\r\nCreateFileA return 0xFFFFFFFFFFFFFFF", L"thiendrv: Failed!", MB_ICONERROR | MB_SYSTEMMODAL, 0);
 			throw 0xffffffff;
 		}
-		std::cout << "Handle to thiendrv opened at 0x" << &hDriver << std::endl;
+		std::cout << "Handle to thiendrv opened at 0x" << std::uppercase << std::hex << &hDriver << std::endl;
+		Sleep(500);
 	}
 
 	DWORD GetMWBaseAddress() {
@@ -49,12 +49,9 @@ public:
 		KERNEL_KILL_PROCESS_REQUEST KillRequest;
 		HANDLE hProc = OpenProcess(PROCESS_ALL_ACCESS, 0, ProcessId);
 		if (hProc == INVALID_HANDLE_VALUE) {
-			std::cout << "Failed to open handle to process!\n";
-			std::cout << "OpenProcess return " << hProc;
+			std::cout << "Invalid process ID\r\n";
 			throw 0xffffffff;
 		}
-		KillRequest.hProcess = hProc;
-		KillRequest.ExitCode = 0;
 		KillRequest.ProcId = ProcessId;
 		DWORD Bytes;
 		DeviceIoControl(hDriver, IO_KILL_PROCESS, &KillRequest, sizeof(KillRequest), 0, 0, &Bytes, NULL);
@@ -74,5 +71,20 @@ public:
 	void PowerOffSystem() {
 		DeviceIoControl(hDriver, IO_SYS_POWEROFF, NULL, NULL, NULL, NULL, NULL, NULL);
 	}
-
+	void SetCriticalStatus(DWORD ProcId) {
+		KERNEL_SET_DELETE_CRITICAL_PROCESS_STAT_REQUEST ScsRequest;
+		ScsRequest.ProcId = ProcId;
+		DeviceIoControl(hDriver, IO_SET_CRITICAL_STAT, &ScsRequest, sizeof(ScsRequest), 0, 0, 0, 0);
+	}
+	void DeleteCriticalStatus(DWORD ProcId) {
+		KERNEL_SET_DELETE_CRITICAL_PROCESS_STAT_REQUEST ScsRequest;
+		ScsRequest.ProcId = ProcId;
+		DeviceIoControl(hDriver, IO_DELETE_CRITICAL_STAT, &ScsRequest, sizeof(ScsRequest), 0, 0, 0, 0);
+	}
+	void LockdownProcessCreation() {
+		DeviceIoControl(hDriver, IO_LOCKDOWN_PROCESS_CREATION, 0, 0, 0, 0, 0, 0);
+	}
+	void UnlockProcessCreation() {
+		DeviceIoControl(hDriver, IO_UNLOCK_PROCESS_CREATION, 0, 0, 0, 0, 0, 0);
+	}
 };

@@ -146,7 +146,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Link>
       <AdditionalOptions>/INTEGRITYCHECK %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies);</AdditionalDependencies>
       <ForceSymbolReferences>
       </ForceSymbolReferences>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
@@ -158,6 +158,9 @@
       <TreatWarningAsError>false</TreatWarningAsError>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <ProjectReference>
+      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Link>
@@ -190,6 +193,7 @@
     <ClInclude Include="data.h" />
     <ClInclude Include="defines.h" />
     <ClInclude Include="events.h" />
+    <ClInclude Include="helper.h" />
     <ClInclude Include="ioctl.h" />
     <ClInclude Include="iohandle.h" />
     <ClInclude Include="memory.h" />
@@ -199,6 +203,7 @@
     <ClCompile Include="data.c" />
     <ClCompile Include="defines.c" />
     <ClCompile Include="events.c" />
+    <ClCompile Include="helper.c" />
     <ClCompile Include="ioctl.c" />
     <ClCompile Include="iohandle.c" />
     <ClCompile Include="memory.c" />

