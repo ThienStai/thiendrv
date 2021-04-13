@@ -1,14 +1,36 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="mem.cpp" />
-    <ClCompile Include="proc.cpp" />
-    <ClCompile Include="thienctl.cpp" />
+    <ClCompile Include="mem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="proc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="thienctl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="defines.hpp" />
-    <ClInclude Include="kernelinterface.hpp" />
-    <ClInclude Include="mem.h" />
-    <ClInclude Include="proc.h" />
+    <ClInclude Include="kernelinterface.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="proc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="defines.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{da821f1a-8f64-4003-9328-4dd99f430717}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{60132444-81cd-464c-b9f8-cd6ee840c014}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

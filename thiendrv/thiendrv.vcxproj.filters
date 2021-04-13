@@ -46,28 +46,25 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="data.c">
+    <ClCompile Include="defines.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="defines.c">
+    <ClCompile Include="events.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="events.c">
+    <ClCompile Include="helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="helper.c">
+    <ClCompile Include="ioctl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ioctl.c">
+    <ClCompile Include="iohandle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="iohandle.c">
+    <ClCompile Include="memory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="memory.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="thiendrv.c">
+    <ClCompile Include="thiendrv.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

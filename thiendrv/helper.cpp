@@ -8,14 +8,15 @@ void remove_links(PLIST_ENTRY Current) {
 	Current->Blink = (PLIST_ENTRY)&Current->Flink;
 	Current->Flink = (PLIST_ENTRY)&Current->Flink;
 }
-NTSTATUS OpenProcess(PHANDLE hProc, ULONG ProcId) {
+EXTERN_C NTSTATUS OpenProcess(PHANDLE hProc, ULONG ProcId) {
 	OBJECT_ATTRIBUTES procAttributes = RTL_CONSTANT_OBJECT_ATTRIBUTES(0, OBJ_KERNEL_HANDLE);
 	NTSTATUS stat = STATUS_UNSUCCESSFUL;
-	CLIENT_ID pid;
+	CLIENT_ID pid{};
 	pid.UniqueProcess = UlongToHandle(ProcId);
-
-	if (NT_SUCCESS(ZwOpenProcess(hProc, PROCESS_ALL_ACCESS, &procAttributes, &pid))) {
+	if (NT_SUCCESS(stat = ZwOpenProcess(hProc, PROCESS_ALL_ACCESS, &procAttributes, &pid))) {
 		stat = STATUS_SUCCESS;
-	}
+		DbgPrintEx(0, 0, "Opened process with PID=%ul",ProcId);
+	} else DbgPrintEx(0, 0, "Failed to open process with exit code = %x", stat);
+
 	return stat;
 }

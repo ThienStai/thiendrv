@@ -1,6 +1,6 @@
 #pragma once
 #include <ntddk.h>
-NTSTATUS NTAPI MmCopyVirtualMemory
+extern "C" NTSTATUS NTAPI MmCopyVirtualMemory
 (
 	PEPROCESS SourceProcess,
 	PVOID SourceAddress,

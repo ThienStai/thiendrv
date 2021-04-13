@@ -12,3 +12,9 @@ thiendrv/x64/*
 *.cmd
 *.inf
 *.lib
+*.obj
+*.iobj
+*.tlog
+*.log
+*.ipdb
+*.recipe

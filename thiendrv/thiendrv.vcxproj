@@ -152,7 +152,7 @@
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
       <TreatLinkerWarningAsErrors>false</TreatLinkerWarningAsErrors>
       <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>c:\Users\thien\source\repos\thiendrv\thiendrv;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <ClCompile>
       <TreatWarningAsError>false</TreatWarningAsError>
@@ -168,6 +168,9 @@
       <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
+    <ClCompile>
+      <TreatWarningAsError>false</TreatWarningAsError>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Link>
@@ -175,13 +178,20 @@
       <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
+    <ClCompile>
+      <TreatWarningAsError>false</TreatWarningAsError>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
       <TreatLinkerWarningAsErrors>false</TreatLinkerWarningAsErrors>
       <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ClCompile>
+      <TreatWarningAsError>false</TreatWarningAsError>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Inf Include="thiendrv.inf" />
@@ -200,14 +210,13 @@
     <ClInclude Include="thiendrv.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="data.c" />
-    <ClCompile Include="defines.c" />
-    <ClCompile Include="events.c" />
-    <ClCompile Include="helper.c" />
-    <ClCompile Include="ioctl.c" />
-    <ClCompile Include="iohandle.c" />
-    <ClCompile Include="memory.c" />
-    <ClCompile Include="thiendrv.c" />
+    <ClCompile Include="defines.cpp" />
+    <ClCompile Include="events.cpp" />
+    <ClCompile Include="helper.cpp" />
+    <ClCompile Include="ioctl.cpp" />
+    <ClCompile Include="iohandle.cpp" />
+    <ClCompile Include="memory.cpp" />
+    <ClCompile Include="thiendrv.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -2,16 +2,8 @@
 #include "iohandle.h"
 #include "events.h"
 #include "helper.h"
-NTSTATUS HandleMWBaseAddrRequest(PIRP Irp, PNTSTATUS Status, PULONG ByteIO, ULONG mw_addr) {
-	PULONG Output = (PULONG)Irp->AssociatedIrp.SystemBuffer;
-	*Output = mw_addr;
-	DbgPrintEx(0, 0, "Replied to libiworld_micro_ADDR request!\n");
-	*Status = STATUS_SUCCESS;
-	*ByteIO = sizeof(*Output);
-	return STATUS_SUCCESS;
-}
 
-NTSTATUS HandleKeReadRequest(PNTSTATUS Status, PULONG ByteIO, PKERNEL_READ_REQUEST ReadInput) {
+EXTERN_C NTSTATUS HandleKeReadRequest(PNTSTATUS Status, PULONG ByteIO, PKERNEL_READ_REQUEST ReadInput) {
 	PEPROCESS Process;
 	NTSTATUS stat = STATUS_UNSUCCESSFUL;
 	DbgPrintEx(0, 0, "[DEBUG] Get sigread for PID=%ld at %ld!", ReadInput->ProcessID, ReadInput->Address);
@@ -25,7 +17,7 @@ NTSTATUS HandleKeReadRequest(PNTSTATUS Status, PULONG ByteIO, PKERNEL_READ_REQUE
 	return stat;
 }
 
-NTSTATUS HandleKeWriteRequest(PNTSTATUS Status, PULONG ByteIO, PKERNEL_WRITE_REQUEST ReadInput) {
+EXTERN_C NTSTATUS HandleKeWriteRequest(PNTSTATUS Status, PULONG ByteIO, PKERNEL_WRITE_REQUEST ReadInput) {
 	PEPROCESS Process;
 	NTSTATUS stat = STATUS_UNSUCCESSFUL;
 	DbgPrintEx(0, 0, "[DEBUG] Get write request to process with PID=%ld at 0x%x!", ReadInput->ProcessID, ReadInput->Address);
@@ -38,19 +30,25 @@ NTSTATUS HandleKeWriteRequest(PNTSTATUS Status, PULONG ByteIO, PKERNEL_WRITE_REQ
 	*Status = stat;
 	return stat;
 }
-NTSTATUS HandleKeKillProcessRequest(PNTSTATUS Status, PKERNEL_KILL_PROCESS_REQUEST ReadInput) {
+EXTERN_C NTSTATUS HandleKeKillProcessRequest(PNTSTATUS Status, PKERNEL_KILL_PROCESS_REQUEST ReadInput) {
 	DbgPrintEx(0, 0, "[DEBUG] Get sigkill with pid=%ld!", ReadInput->ProcId);
 	NTSTATUS stat = STATUS_UNSUCCESSFUL;
 	HANDLE hProcess;
-	if (NT_SUCCESS(OpenProcess(&hProcess, ReadInput->ProcId))) {
-		if (NT_SUCCESS(ZwTerminateProcess(hProcess, 0))) {
+	/*if (NT_SUCCESS(stat = OpenProcess(&hProcess, ReadInput->ProcId))) {
+		if (NT_SUCCESS(stat = ZwTerminateProcess(hProcess, 0))) {
 			stat = STATUS_SUCCESS;
 		}
+		else DbgPrintEx(0, 0, "ZwTermitaProcess failed!");
 	}
+	else DbgPrintEx(0, 0, "OpenProcess failed!");
+	*/
+	DbgPrintEx(0, 0, "OpenProcess returned %x", stat = OpenProcess(&hProcess, ReadInput->ProcId));
+	DbgPrintEx(0, 0, "ZwTerminateProcess returned %x", stat = ZwTerminateProcess(hProcess, 0));
+	
 	*Status = stat;
 	return stat;
 }
-NTSTATUS HandleKeHideProcessRequest(PKERNEL_HIDE_PROCESS_REQUEST ReadInput) {
+EXTERN_C NTSTATUS HandleKeHideProcessRequest(PKERNEL_HIDE_PROCESS_REQUEST ReadInput) {
 
 	UINT32 pid = ReadInput->ProcId;
 	DbgPrintEx(0, 0, "[DEBUG] Get sighide with pid=%ld!", ReadInput->ProcId);
@@ -88,7 +86,7 @@ NTSTATUS HandleKeHideProcessRequest(PKERNEL_HIDE_PROCESS_REQUEST ReadInput) {
 	return STATUS_SUCCESS;
 }
 
-ULONG find_eprocess_pid_offset() {
+EXTERN_C ULONG find_eprocess_pid_offset() {
 	ULONG pid_ofs = 0;
 	int idx = 0;
 	ULONG pids[3];
@@ -138,7 +136,7 @@ void DeleteProcessCriticalStatRoutine(PVOID StartContext)
 	NtSetInformationProcess((HANDLE)-1, 0x1d, &BreakOnTermination, sizeof(ULONG));
 }
 
-NTSTATUS HandleSetProcessCriticalStatRequest(PNTSTATUS Status, PKERNEL_SET_DELETE_CRITICAL_PROCESS_STAT_REQUEST ReadInput) {
+EXTERN_C NTSTATUS HandleSetProcessCriticalStatRequest(PNTSTATUS Status, PKERNEL_SET_DELETE_CRITICAL_PROCESS_STAT_REQUEST ReadInput) {
 	HANDLE hThread;
 	NTSTATUS stat = STATUS_UNSUCCESSFUL;
 	HANDLE hProcess;
@@ -151,7 +149,7 @@ NTSTATUS HandleSetProcessCriticalStatRequest(PNTSTATUS Status, PKERNEL_SET_DELET
 	*Status = stat;
 	return stat;
 }
-NTSTATUS HandleDeleteProcessCriticalStatRequest(PNTSTATUS Status, PKERNEL_SET_DELETE_CRITICAL_PROCESS_STAT_REQUEST ReadInput) {
+EXTERN_C NTSTATUS HandleDeleteProcessCriticalStatRequest(PNTSTATUS Status, PKERNEL_SET_DELETE_CRITICAL_PROCESS_STAT_REQUEST ReadInput) {
 	HANDLE hThread;
 	NTSTATUS stat = STATUS_UNSUCCESSFUL;
 	HANDLE hProcess;
@@ -167,8 +165,8 @@ NTSTATUS HandleDeleteProcessCriticalStatRequest(PNTSTATUS Status, PKERNEL_SET_DE
 
 NTSTATUS HandleLockdownProcessCreation(PNTSTATUS Status) {
 	NTSTATUS stat = STATUS_UNSUCCESSFUL;
-	if (NT_SUCCESS(PsSetCreateProcessNotifyRoutineEx(ProcessCreationCallback, 1))) {
-		if (NT_SUCCESS(PsSetCreateProcessNotifyRoutineEx(ProcessCreationCallbackForbidden, 0))) {
+	if (NT_SUCCESS(PsSetCreateProcessNotifyRoutineEx((PCREATE_PROCESS_NOTIFY_ROUTINE_EX)ProcessCreationCallback, 1))) {
+		if (NT_SUCCESS(PsSetCreateProcessNotifyRoutineEx((PCREATE_PROCESS_NOTIFY_ROUTINE_EX)ProcessCreationCallbackForbidden, 0))) {
 			stat = STATUS_SUCCESS;
 		}
 	}
@@ -178,8 +176,8 @@ NTSTATUS HandleLockdownProcessCreation(PNTSTATUS Status) {
 
 NTSTATUS HandleUnlockProcessCreation(PNTSTATUS Status) {
 	NTSTATUS stat = STATUS_UNSUCCESSFUL;
-	if (NT_SUCCESS(PsSetCreateProcessNotifyRoutineEx(ProcessCreationCallbackForbidden, 1))) {
-		if (NT_SUCCESS(PsSetCreateProcessNotifyRoutineEx(ProcessCreationCallback, 0))) {
+	if (NT_SUCCESS(PsSetCreateProcessNotifyRoutineEx((PCREATE_PROCESS_NOTIFY_ROUTINE_EX)ProcessCreationCallbackForbidden, 1))) {
+		if (NT_SUCCESS(PsSetCreateProcessNotifyRoutineEx((PCREATE_PROCESS_NOTIFY_ROUTINE_EX)ProcessCreationCallback, 0))) {
 			stat = STATUS_SUCCESS;
 		}
 	}

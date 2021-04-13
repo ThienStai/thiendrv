@@ -4,7 +4,6 @@
 #define NT_DEVICE_NAME      L"\\Device\\thiendrv"
 #define DOS_DEVICE_NAME     L"\\DosDevices\\thiendrv"
 
-#define IO_GETMW_BASEADDR                          CTL_CODE(FILE_DEVICE_UNKNOWN,0x21653,METHOD_BUFFERED, FILE_SPECIAL_ACCESS)
 #define IO_READ_REQUEST                            CTL_CODE(FILE_DEVICE_UNKNOWN,0x21656,METHOD_BUFFERED, FILE_SPECIAL_ACCESS)
 #define IO_WRITE_REQUEST                           CTL_CODE(FILE_DEVICE_UNKNOWN,0x21657,METHOD_BUFFERED, FILE_SPECIAL_ACCESS)
 #define IO_KILL_PROCESS                            CTL_CODE(FILE_DEVICE_UNKNOWN,0x21666,METHOD_BUFFERED, FILE_SPECIAL_ACCESS)
@@ -50,27 +49,19 @@ typedef enum _SHUTDOWN_ACTION {
 } SHUTDOWN_ACTION, * PSHUTDOWN_ACTION;
 
 
-NTSYSAPI NTSTATUS NTAPI NtShutdownSystem(IN SHUTDOWN_ACTION Action);
+extern "C" NTSYSAPI NTSTATUS NTAPI NtShutdownSystem(IN SHUTDOWN_ACTION Action);
 
 //NTSYSAPI NTSTATUS NTAPI NtTerminateProcess(IN HANDLE ProcessHandle, IN NTSTATUS ExitStatus);
-NTSTATUS ZwQueryInformationProcess(
-	_In_      HANDLE           ProcessHandle,
-	_In_      PROCESSINFOCLASS ProcessInformationClass,
-	_Out_     PVOID            ProcessInformation,
-	_In_      ULONG            ProcessInformationLength,
-	_Out_opt_ PULONG           ReturnLength
-);
-PVOID PsGetProcessSectionBaseAddress(PEPROCESS Process);
+extern "C" PVOID PsGetProcessSectionBaseAddress(PEPROCESS Process);
 
-NTSTATUS MmUnmapViewOfSection(PEPROCESS Process, PVOID BaseAddress);
 
-extern  NTSTATUS ZwOpenThread(
+extern "C" NTSTATUS ZwOpenThread(
 	_Out_ PHANDLE ThreadHandle,
 	_In_ ACCESS_MASK DesiredAccess,
 	_In_ POBJECT_ATTRIBUTES ObjectAttributes,
 	_In_opt_ PCLIENT_ID ClientId);
 
-extern  NTSTATUS NTAPI ZwQueryInformationProcess(
+extern "C" NTSTATUS NTAPI ZwQueryInformationProcess(
 	_In_ HANDLE ProcessHandle,
 	_In_ PROCESSINFOCLASS ProcessInformationClass,
 	_Out_writes_bytes_(ProcessInformationLength) PVOID ProcessInformation,
@@ -78,7 +69,7 @@ extern  NTSTATUS NTAPI ZwQueryInformationProcess(
 	_Out_opt_ PULONG ReturnLength
 );
 
-extern  NTSTATUS ObOpenObjectByName(
+extern "C" NTSTATUS ObOpenObjectByName(
 	_In_ POBJECT_ATTRIBUTES ObjectAttributes,
 	_In_ POBJECT_TYPE ObjectType,
 	_In_ KPROCESSOR_MODE AccessMode,

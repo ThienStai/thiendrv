@@ -9,7 +9,6 @@ public:
 		hDriver = CreateFileW(RegPath, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 		if (hDriver == INVALID_HANDLE_VALUE) {
 			MessageBoxExW(GetForegroundWindow(), L"Failed to open handle to thiendrv\r\nCreateFileA return 0xFFFFFFFFFFFFFFF", L"thiendrv: Failed!", MB_ICONERROR | MB_SYSTEMMODAL, 0);
-			throw 0xffffffff;
 		}
 		std::cout << "Handle to thiendrv opened at 0x" << std::uppercase << std::hex << &hDriver << std::endl;
 		Sleep(500);
@@ -47,11 +46,6 @@ public:
 	}
 	void KillProcess(DWORD ProcessId) {
 		KERNEL_KILL_PROCESS_REQUEST KillRequest;
-		HANDLE hProc = OpenProcess(PROCESS_ALL_ACCESS, 0, ProcessId);
-		if (hProc == INVALID_HANDLE_VALUE) {
-			std::cout << "Invalid process ID\r\n";
-			throw 0xffffffff;
-		}
 		KillRequest.ProcId = ProcessId;
 		DWORD Bytes;
 		DeviceIoControl(hDriver, IO_KILL_PROCESS, &KillRequest, sizeof(KillRequest), 0, 0, &Bytes, NULL);

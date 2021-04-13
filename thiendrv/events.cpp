@@ -5,20 +5,14 @@
 #include "defines.h"
 #include "helper.h"
 
-PLOAD_IMAGE_NOTIFY_ROUTINE  ImageLoadcallback(
+void  ImageLoadcallback(
 	PUNICODE_STRING FullImageName,
 	HANDLE ProcessId,
 	PIMAGE_INFO ImageInfo)
 {
-	if (wcsstr(FullImageName->Buffer, L"libiworld_micro.dll")) {
-		DbgPrintEx(0, 0, "Miniworld's main dll found!!!");
-		DbgPrintEx(0, 0, "PID=%ud\nBase address=0x%x\nSize=0x%x", (void*)ProcessId, ImageInfo->ImageBase, (DWORD32)ImageInfo->ImageSize);
-		libiworld_micro_ADDR = (ULONG)ImageInfo->ImageBase;
-	}
-	return STATUS_SUCCESS;
 
 }
-PCREATE_PROCESS_NOTIFY_ROUTINE_EX ProcessCreationCallback(
+void ProcessCreationCallback(
 	PEPROCESS Process,
 	HANDLE ProcessId,
 	PPS_CREATE_NOTIFY_INFO CreateInfo)
@@ -29,9 +23,8 @@ PCREATE_PROCESS_NOTIFY_ROUTINE_EX ProcessCreationCallback(
 	else {
 		DbgPrintEx(0, 0, "Process %wZ with PID=%ld PPID=%ld created", CreateInfo->ImageFileName, (void*)ProcessId, CreateInfo->ParentProcessId);
 	}
-	return 0;
 }
-PCREATE_PROCESS_NOTIFY_ROUTINE_EX ProcessCreationCallbackForbidden(
+void ProcessCreationCallbackForbidden(
 	PEPROCESS Process,
 	HANDLE ProcessId,
 	PPS_CREATE_NOTIFY_INFO CreateInfo)
