@@ -1,5 +1,6 @@
 thiendrv/x64/Release/thiendrv.tlog/*
 .vs/*
+./x64/
 thienctl/Debug/*
 thienctl/ARM/*
 thienctl/x64/*
@@ -18,3 +19,9 @@ thiendrv/x64/*
 *.log
 *.ipdb
 *.recipe
+x64/Release/thiendrv.inf
+x64/Release/thiendrv.pdb
+x64/Release/thiendrv.sys
+x64/Release/thiendrv/thiendrv.cat
+x64/Release/thiendrv/thiendrv.inf
+x64/Release/thiendrv/thiendrv.sys

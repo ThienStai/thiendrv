@@ -9,7 +9,7 @@ NTSTATUS CreateCloseCall(PDEVICE_OBJECT pDevObj, PIRP Irp)
 	auto status = STATUS_SUCCESS;
 	auto stack = IoGetCurrentIrpStackLocation(Irp);
 	if (stack->MajorFunction == IRP_MJ_CREATE) {
-		// verify it's System explorer client (very simple at the moment)
+		// verify it's thienctl (very simple at the moment)
 		HANDLE hProcess;
 		status = ObOpenObjectByPointer(PsGetCurrentProcess(), OBJ_KERNEL_HANDLE, nullptr, 0, *PsProcessType, KernelMode, &hProcess);
 		NT_ASSERT(NT_SUCCESS(status));
